@@ -30,6 +30,44 @@ recordRoutes.route("/").get(function (req, res) {
      res.json(result);
    });
 });
- 
+
+
+// This section will help you create a new record.
+recordRoutes.route("/login").post(function (req, response) {
+  // console.log(req,response);
+  let db_connect = dbo.getDb("codebrewers");
+  db_connect
+   .collection("auth")
+   .find({})
+   .toArray(function (err, result) {
+     if (err) console.log(err);
+     res_array = res.json(result);
+     res_array.map((ele,i)=> {
+        if(req.body.username===ele['username']){
+          if(req.body.password===ele['password']){
+            console.log("Successful Login")
+            res.json("1")
+          }
+        }
+        res.json("0")
+     })
+   });
+  })
+
+ recordRoutes.route("/register").post(function (req, response) {
+  // console.log(req,response);
+  let db_connect = dbo.getDb("codebrewers");
+  let obj = {
+    username: req.body.username,
+    password: req.body.password,
+    email: req.body.email,
+    number: req.body.number
+  };
+  db_connect.collection("auth").insertOne(obj, function (err, res) {
+    if (err) throw err;
+    console.log(res);
+    response.json(res);
+  });
+ }); 
+
 module.exports = recordRoutes;
-// export default record;
